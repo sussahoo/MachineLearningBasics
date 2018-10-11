@@ -6,7 +6,8 @@ function [theta, J_history] = gradientDescentMulti(X, y, theta, alpha, num_iters
 % Initialize some useful values
 m = length(y); % number of training examples
 J_history = zeros(num_iters, 1);
-computeCostMulti(X, y, theta);
+
+
 for iter = 1:num_iters
 
     % ====================== YOUR CODE HERE ======================
@@ -16,25 +17,13 @@ for iter = 1:num_iters
     % Hint: While debugging, it can be useful to print out the values
     %       of the cost function (computeCostMulti) and gradient here.
     %
-    h = X * theta;
-    hmy = (h-y);
-    val = zeros(1,size(X,2));
-    for i = 1:size(X,2)
-        hmy(:,i:i) = (h-y) .* X(:,i:i);
-        %hmyx =(h-y) .* X(:,2);
     
-        val(:,i:i) = sum(hmy(:,i)) * (1/m);
-        %val1 = sum(hmyx) * (1/m);
-    end
-    %temp1 = theta(1) - (alpha * val) ;
-    %temp2 =  theta(2) - (alpha * val1) ;
-    %theta(1) = temp1;
-    %theta(2) = temp2;
-    
-    %delta = [val;val1];
-    for j = 1:size(X,2)
-        theta(j) = (theta(j) -(val(:,j:j) .* alpha)); 
-    end
+    %theta0Delta = (sum(((X * theta) - y) .* X(:,1)) * alpha) / m;
+    %theta1Delta = (sum(((X * theta) - y) .* X(:,2)) * alpha) / m;
+    %theta2Delta = (sum(((X * theta) - y) .* X(:,3)) * alpha) / m;
+    %theta = theta - [theta0Delta;theta1Delta;theta2Delta];
+ 
+    theta = theta - (alpha/m)*(X')*(X*theta - y);
     
 
     % ============================================================

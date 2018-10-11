@@ -39,6 +39,7 @@ X = data(:, 1:2);
 y = data(:, 3);
 m = length(y);
 
+
 % Print out some data points
 fprintf('First 10 examples from the dataset: \n');
 fprintf(' x = [%.0f %.0f], y = %.0f \n', [X(1:10,:) y(1:10,:)]');
@@ -50,6 +51,9 @@ pause;
 fprintf('Normalizing Features ...\n');
 
 [X mu sigma] = featureNormalize(X);
+%disp(sigma)
+%disp(mu)
+%fprintf(' x = [%.0f %.0f], \n', [X(1:10,:)]');
 
 % Add intercept term to X
 X = [ones(m, 1) X];
@@ -81,17 +85,35 @@ X = [ones(m, 1) X];
 
 fprintf('Running gradient descent ...\n');
 
-% Choose some alpha value
-alpha = 0.01;
-num_iters = 400;
+% Choose some alpha value best value 0.3,600
+alpha = 0.3;
+num_iters = 600;
 
 % Init Theta and Run Gradient Descent 
-theta = zeros(3, 1);
+theta = zeros(size(X,2), 1);
+
+%Susanta's prints
+%size(X)
+%size(X*theta - y)
+%size(X')
+ 
 [theta, J_history] = gradientDescentMulti(X, y, theta, alpha, num_iters);
 
 % Plot the convergence graph
 figure;
 plot(1:numel(J_history), J_history, '-b', 'LineWidth', 2);
+
+%below lines are for trying different alpha and number of iteration
+%{
+hold on;
+alpha = 0.01;
+num_iters = 100;
+theta1 = zeros(size(X,2), 1);
+[theta, J1_history] = gradientDescentMulti(X, y, theta1, alpha, num_iters);
+plot(1:numel(J1_history), J1_history, '-r', 'LineWidth', 2);
+%}
+
+
 xlabel('Number of iterations');
 ylabel('Cost J');
 
@@ -104,8 +126,9 @@ fprintf('\n');
 % ====================== YOUR CODE HERE ======================
 % Recall that the first column of X is all-ones. Thus, it does
 % not need to be normalized.
-price = 0; % You should change this
-price = [1,0.44,3]*theta;
+price = [1,(1650-mu(1))/sigma(1),(3-mu(2))/sigma(2)]*theta; % You should change this
+%price = 0; % You should change this
+%price = [1,0.44,3]*theta;
 
 % ============================================================
 
@@ -128,17 +151,21 @@ fprintf('Solving with normal equations...\n');
 %               After doing so, you should complete this code 
 %               to predict the price of a 1650 sq-ft, 3 br house.
 %
+% Calculate the parameters from the normal equation
 
-%% Load Data
-data = csvread('ex1data2.txt');
+data = load('ex1data2.txt');
 X = data(:, 1:2);
 y = data(:, 3);
 m = length(y);
 
+% for normal equation we don't need to normalize, so comment below line
+%[X mu sigma] = featureNormalize(X);
+
 % Add intercept term to X
 X = [ones(m, 1) X];
 
-% Calculate the parameters from the normal equation
+
+
 theta = normalEqn(X, y);
 
 % Display normal equation's result
@@ -150,10 +177,34 @@ fprintf('\n');
 % Estimate the price of a 1650 sq-ft, 3 br house
 % ====================== YOUR CODE HERE ======================
 price = 0; % You should change this
-
-
+price = [1 1650 3] * theta
+%uncomment if you want to normalize which is not required
+%price = [1,(1650-mu(1))/sigma(1),(3-mu(2))/sigma(2)]*theta; % You should change this
 % ============================================================
 
 fprintf(['Predicted price of a 1650 sq-ft, 3 br house ' ...
          '(using normal equations):\n $%f\n'], price);
 
+         
+% Plotting Training and regressioned data.
+%{ 
+fprintf('Plotting Training and regressioned results by solving normal equation.\n');
+figure;
+plot3(X(:,2),X(:,3),y,"o");
+xlabel('sq-ft of room');
+ylabel('#bedroom');
+zlabel('price');
+grid;
+hold on;
+xx = linspace(0,5000,25);
+yy = linspace(1,5,25);
+zz = zeros(size(xx,2),size(yy,2));
+for i=1:size(xx,2)
+for j=1:size(yy,2)
+  zz(i,j) = [1 xx(i) yy(j)]*theta;
+end
+end
+mesh(xx,yy,zz);
+title('Result of Solving Normal Equation');
+legend('Training data', 'Linear regression');
+%}

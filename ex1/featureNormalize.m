@@ -25,13 +25,11 @@ sigma = zeros(1, size(X, 2));
 %
 % Hint: You might find the 'mean' and 'std' functions useful.
 %       
-mu = mean(X)
-sigma = std(X)
+mu = mean(X);
+sigma = std(X);
 
-for i = 1:size(X,2)
-    X_norm(:,i:i) = ((X(:,i:i) - mu(:,i:i))/sigma(:,i:i));
-end
-
+%such form(broad casting) works as long as X ,mu,sigma have same number of columns
+X_norm = (X.-mu)./sigma;
 
 
 
