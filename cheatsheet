@@ -1,0 +1,13 @@
+Kaggle Dataset
+
+Download kaggle.json
+
+! mkdir ~/.kaggle
+! cp kaggle.json ~/.kaggle/
+! chmod 600 ~/.kaggle/kaggle.json
+! kaggle datasets download -d sterby/german-recipes-dataset -p . --unzip
+
+
+
+df = df[df['Lyric'].apply(lambda x: len(x.split(' ')) < 300)]
+len(df)
