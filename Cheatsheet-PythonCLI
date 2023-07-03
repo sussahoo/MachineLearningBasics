@@ -1,0 +1,42 @@
+import os
+import pathlib
+from typing import Optional
+# import openai
+from chat_to_files import to_files
+import typer
+
+# def main(name: str):
+#     print(f"Hello {name}")
+app = typer.Typer()
+
+@app.command()
+def hello(name: str):
+    print(f"Hello {name}")
+
+@app.command()
+def chat(
+    engine: str = "gpt-4",
+    temperature: float = 0.0,
+    max_tokens: int = 4096,
+    n: int = 1,
+    stream: bool = True,
+    system_prompt: str = typer.Argument("system", help="System prompt file"),
+    user_prompt: str = typer.Argument("user", help="User prompt file"),
+    code_to_file_path: Optional[str] = typer.Option(
+        None, "--out", "-c", help="Code to file path"
+    ),
+):
+    print(system_prompt)
+    print(user_prompt)
+    print(code_to_file_path)
+
+
+
+python main.py --help
+python main.py hello --help
+python main.py chat --help
+python main.py system_prompt
+python main.py system_prompt xxx
+python main.py --engine yyy system_prompt xxx
+python main.py chat --engine yyy --out zzz system_prompt xxx
+python main.py chat --engine yyy -c zzz system_prompt xxx
